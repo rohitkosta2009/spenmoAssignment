@@ -5,11 +5,7 @@ const { chromium } = require('playwright');
 
     //Lanuch Browser without Headless
     const browser = await chromium.launch({headless:false, slowMo: 300});
-
-    const context = await browser.newContext({ acceptDownloads: true });
-    const page = await context.newPage();
-
-    //const page = await browser.newPage();
+    const page = await browser.newPage();
 
     //Redirect to Spenmo URL
     await page.goto('https://dashboard.spenmo-staging.com/');
@@ -45,28 +41,25 @@ const { chromium } = require('playwright');
     await page.click('//div[@class="ant-select-item-option-content"]/p[text()="Reimbursement"]');
 
     const maxAmount = await page.$('//input[@id="max_amount"]');
-    maxAmount.type('1', { timeout: 10000 });
+    maxAmount.type('15');
 
-    await page.locator('(//button[@value="Submit"])[4]').click({ timeout: 10000 });
+    var millisecondsToWait = 5000;
+    setTimeout(function(){
+        page.click('(//button[@value="Submit"])[4]');
+    }, millisecondsToWait);
+
 
 
     
     //Download CSV File
-    const [ download ] = await Promise.all([
-        page.waitForEvent('download'), // wait for download to start
-        page.click('img[src="/static/media/download-icon.62719e9f.svg"]')
-    ]);
+    var millisecondsToWait = 6000;
+    setTimeout(function(){
+        page.click('(//img[@class="icon__image"])[2]');
+    }, millisecondsToWait);
 
-    const reliablePath = 'my-file.avi';
-    await download.saveAs(reliablePath);
-    // wait for the download and delete the temporary file
-    await download.delete()
 
 
     //Verify CSV Details
-
-
-
 
 
 
