@@ -57,7 +57,7 @@ const { chromium } = require('playwright');
         page.click('img[src="/static/media/download-icon.62719e9f.svg"]')
     ]);
 
-    const reliablePath = 'my-file.avi';
+    const reliablePath = 'my-file.csv';
     await download.saveAs(reliablePath);
     // wait for the download and delete the temporary file
     await download.delete()
