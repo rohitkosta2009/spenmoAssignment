@@ -75,12 +75,12 @@ const { chromium } = require('playwright');
     const expenseCategory = await page.$('//p[text()="1 Car Expenses"]');
     const notes = await page.$('//p[text()="Spenmo Assignment 1"]');
 
-    console.log(await pendingText.isVisible());
-    console.log(await requestType.isVisible());
-    console.log(await currency.isVisible());
-    console.log(await merchant.isVisible());
-    console.log(await expenseCategory.isVisible());
-    console.log(await notes.isVisible());
+    console.log('Pending Text is displayed: '+ await pendingText.isVisible());
+    console.log('Correct Request Type is displayed: '+ await requestType.isVisible());
+    console.log('Correct Currency is displayed: '+ await currency.isVisible());
+    console.log('Correct Merchant is displayed: '+ await merchant.isVisible());
+    console.log('Correct Expense Category is displayed: '+ await expenseCategory.isVisible());
+    console.log('Correct Note is displayed: '+ await notes.isVisible());
 
     //expect(page.locator('//p[@class="reimburse-details__label reimburse-details__label--pending"]')).toBeVisible();
 

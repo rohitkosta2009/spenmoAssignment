@@ -27,55 +27,66 @@ const { chromium } = require('playwright');
     await page.click('(//div[@class="ant-tabs-tab-btn"])[2]');
 
     //Filter Details
-    await page.click('//button[@id="filterToggle"]');
-    //await page.click('(//input[contains(@id, "rc_select")])[2]');
+       await page.click('//button[@id="filterToggle"]');
+       //await page.click('(//input[contains(@id, "rc_select")])[2]');
 
-    const employeeDropdown = await page.$('(//input[contains(@id, "rc_select")])[2]');
-    employeeDropdown.type('admin');
+       const employeeDropdown = await page.$('(//input[contains(@id, "rc_select")])[2]');
+       employeeDropdown.type('admin');
 
-    var millisecondsToWait = 5000;
-    setTimeout(function(){
-        page.keyboard.press('Enter');
-        page.click('(//input[contains(@id, "rc_select")])[3]');
-    }, millisecondsToWait);
+       var millisecondsToWait = 5000;
+       setTimeout(function(){
+         page.keyboard.press('Enter');
+         page.click('(//input[contains(@id, "rc_select")])[3]');
+        }, millisecondsToWait);
 
-    await page.click('//div[@class="ant-select-item-option-content"]/p[text()="Pending"]');
+       await page.click('//div[@class="ant-select-item-option-content"]/p[text()="Pending"]');
 
-    await page.click('(//input[contains(@id, "rc_select")])[4]');
-    await page.click('//div[@class="ant-select-item-option-content"]/p[text()="Reimbursement"]');
+       await page.click('(//input[contains(@id, "rc_select")])[4]');
+       await page.click('//div[@class="ant-select-item-option-content"]/p[text()="Reimbursement"]');
 
-    const maxAmount = await page.$('//input[@id="max_amount"]');
-    maxAmount.type('1', { timeout: 10000 });
+       const maxAmount = await page.$('//input[@id="max_amount"]');
+       maxAmount.type('1', { timeout: 10000 });
 
-    await page.locator('(//button[@value="Submit"])[4]').click({ timeout: 10000 });
+       await page.locator('(//button[@value="Submit"])[4]').click({ timeout: 10000 });
 
 
     
     //Download CSV File
-    const [ download ] = await Promise.all([
+       const [ download ] = await Promise.all([
         page.waitForEvent('download'), // wait for download to start
         page.click('img[src="/static/media/download-icon.62719e9f.svg"]')
-    ]);
+        ]);
 
-    const reliablePath = 'my-file.csv';
-    await download.saveAs(reliablePath);
-    // wait for the download and delete the temporary file
-    await download.delete()
+       const reliablePath = 'spenmoFile.csv';
+       await download.saveAs(reliablePath);
+       // wait for the download and delete the temporary file
+       await download.delete()
 
 
     //Verify CSV Details
-
-
-
-
-
-
-
-    var millisecondsToWait = 20000;
-    setTimeout(function(){
-        page.click('//table/tbody/tr[1]/td[@title="admin"]')
-    }, millisecondsToWait);
-
+       const { assert } = require('console');
+       const csv = require('csv-parser')
+       const fs = require('fs')
+       const results = [];
+    
+       fs.createReadStream('./spenmoFile.csv')
+       .pipe(csv({}))
+       .on('data', (data) => results.push(data))
+       .on('end', () => {
+       console.log(results[0]);
+      
+       //Assertion on CSV File Data
+        var assert = require('assert');   
+        assert.equal('reimbursement', results[0].request_type);
+        assert.equal('Test', results[0].team_name);
+        assert.equal('pending', results[0].status);
+        assert.equal('pending', results[0].settlement_status);
+        assert.equal('admin', results[0].name);
+        assert.equal('admin@bd.com', results[0].email);
+        assert.equal('1.00', results[0].amount);
+        assert.equal('EUR', results[0].currency_code);
+        assert.equal('Spenmo Assignment 1', results[0].title);
+    });
 
     //Close Browser
     await browser.close();
